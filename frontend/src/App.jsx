@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import AiChat from "./components/AiChat.jsx";
 
 function App() {
   const [message, setMessage] = useState("Connecting to backend...");
@@ -34,6 +35,8 @@ function App() {
 
       <h3>Backend Response:</h3>
       <p>{message}</p>
+
+      <AiChat />
     </div>
   );
 }

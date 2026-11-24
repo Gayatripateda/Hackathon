@@ -1,6 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from app.api.ai import router as ai_router
+
 app = FastAPI(
     title="Hackathon Starter Kit",
     description="Reusable backend for hackathon projects",
@@ -14,6 +16,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.include_router(ai_router)
 
 @app.get("/")
 def home():
