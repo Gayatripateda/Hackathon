@@ -36,7 +36,7 @@ The project is also suitable for learners who want to understand how a browser a
 
 There is no document upload or parsing, database, authentication, data-analysis module, chat history, streaming, or deployment setup. The previous BHARAT DOC AI ideas are not implemented features.
 
-The first AI module supports Gemini only. Its default model is configurable, prompts and replies are not stored, and the backend does not impose user authentication or its own rate limit. CORS is configured for local development, not production.
+The first AI module supports Gemini only. Its default model is configurable, prompts and replies are not stored, and the backend does not provide user authentication. The chat endpoint has a process-local limit of 10 requests per client address per 60 seconds; this limit is not shared across workers or server instances. CORS is configured for local development, not production.
 
 ## Project layout
 
@@ -189,7 +189,8 @@ Provider tests use a mocked Gemini response and do not require a key or make a p
 
 ## Security notes
 
-- The API has no authentication, request rate limiting, persistence, or upload handling. Do not expose it publicly without cost/abuse controls.
+- The AI endpoint has no authentication. It limits each observed client address to 10 requests per 60 seconds in the current backend process, but this is only a basic abuse control: it is not shared across workers/instances, and clients behind the same proxy may share one limit. Do not expose it publicly without production-grade authentication, shared rate limiting or quotas, and provider spending limits.
+- The limiter uses the ASGI connection's client address and does not trust forwarded-IP headers. Configure trusted proxy handling deliberately if deploying behind a reverse proxy.
 - The CORS origin is limited to local development. CORS is not a replacement for authentication.
 - Credentials are enabled in the current CORS configuration; review that setting and allowed origins before deployment.
 - The Gemini key is read by FastAPI from its environment. Never commit API keys, passwords, tokens, or real user data.
